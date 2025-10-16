@@ -1,132 +1,64 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1.0" />
-<title>The Mom’s Kitchen | Review & Earn</title>
-<link href="https://cdn.jsdelivr.net/npm/remixicon@4.0.0/fonts/remixicon.css" rel="stylesheet">
-<style>
-body{
-  font-family:'Poppins',sans-serif;
-  background:linear-gradient(135deg,#a8c0ff,#3f2b96);
-  margin:0;
-  padding:20px;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  min-height:100vh;
-  flex-direction:column;
-}
-.container{
-  width:100%;
-  max-width:400px;
-  background:#fff;
-  border-radius:20px;
-  padding:25px;
-  box-shadow:0 6px 20px rgba(0,0,0,0.15);
-  text-align:center;
-  margin-bottom:70px;
-}
-.logo{
-  font-size:22px;
-  font-weight:700;
-  color:#3f2b96;
-  margin-bottom:8px;
-}
-.subtitle{font-size:13px;color:#777;margin-bottom:15px;}
-input,button{
-  width:100%;
-  padding:12px;
-  margin:8px 0;
-  border-radius:10px;
-  border:1px solid #ccc;
-  font-size:15px;
-}
-button{
-  background:#3f2b96;
-  color:#fff;
-  font-weight:bold;
-  border:none;
-  cursor:pointer;
-  transition:0.3s;
-}
-button:hover{background:#2c1e6a;}
-#message{
-  color:green;
-  font-weight:bold;
-  font-size:14px;
-  margin-top:10px;
-}
-.navbar{
-  position:fixed;bottom:0;left:0;right:0;
-  background:#fff;
-  display:flex;justify-content:space-around;
-  border-top:1px solid #ddd;
-  box-shadow:0 -3px 10px rgba(0,0,0,0.1);
-  padding:8px 0;
-}
-.navbar a{
-  text-decoration:none;color:#555;font-size:13px;text-align:center;
-}
-.navbar a.active{color:#3f2b96;font-weight:bold;}
-.navbar i{display:block;font-size:20px;margin-bottom:4px;}
-</style>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Mom’s Kitchen | Submit Review</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<div class="container">
-  <div class="logo">🍽 The Mom’s Kitchen</div>
-  <div class="subtitle">Homemade • Fresh • Delicious</div>
+  <div class="container">
+    <img src="https://i.imgur.com/9A9O1MN.png" class="logo" alt="Logo">
+    <h2>⭐ Submit Your Google Review Proof</h2>
+    <p>Upload your review screenshot to earn points!</p>
 
-  <h3>⭐ Review & Earn</h3>
-  <p>Upload your Google Review screenshot to earn reward points.</p>
+    <form id="reviewForm">
+      <input type="text" id="name" placeholder="Your Name" required>
+      <input type="text" id="mobile" placeholder="Mobile Number" required>
+      <input type="file" id="screenshot" accept="image/*" required>
+      <button type="submit">Upload & Submit</button>
+    </form>
 
-  <form id="reviewForm">
-    <input type="text" name="name" placeholder="Your Name" required>
-    <input type="text" name="mobile" placeholder="Mobile Number" required>
-    <input type="file" name="file" accept="image/*" required>
-    <button type="submit">Upload & Submit</button>
-  </form>
-  <p id="message"></p>
-</div>
+    <p id="status"></p>
+  </div>
 
-<div class="navbar">
-  <a href="index.html" class="active"><i class="ri-home-4-line"></i>Upload</a>
-  <a href="check-points.html"><i class="ri-star-line"></i>Points</a>
-  <a href="rewards.html"><i class="ri-gift-line"></i>Rewards</a>
-</div>
+  <script>
+  const scriptURL = "YOUR_APPS_SCRIPT_WEB_APP_URL";
 
-<script>
-const scriptURL = "https://script.google.com/macros/s/AKfycbzgvJld-vhl00215rqzGroVpF0XSB9ZraJzoFncwwRQ0tkQ40I-OI6SyiFNCKV029cSJA/exec";
+  document.getElementById("reviewForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const name = document.getElementById("name").value.trim();
+    const mobile = document.getElementById("mobile").value.trim();
+    const screenshot = document.getElementById("screenshot").files[0];
+    const status = document.getElementById("status");
 
-document.getElementById("reviewForm").addEventListener("submit", async (e)=>{
-  e.preventDefault();
-  const form = e.target;
-  const file = form.file.files[0];
-  if(!file){alert("Please select a file");return;}
+    if (!screenshot) return alert("Please upload your review screenshot!");
 
-  const reader = new FileReader();
-  reader.onload = async ()=>{
-    const base64 = reader.result.split(",")[1];
-    const data = new URLSearchParams();
-    data.append("name", form.name.value);
-    data.append("mobile", form.mobile.value);
-    data.append("file", base64);
-    data.append("mimeType", file.type);
+    status.innerText = "📤 Uploading your review...";
 
-    document.getElementById("message").innerText = "⏳ Uploading...";
+    // Upload to Imgur (free)
+    const formData = new FormData();
+    formData.append("image", screenshot);
+    const imgurRes = await fetch("https://api.imgur.com/3/image", {
+      method: "POST",
+      headers: { Authorization: "Client-ID 1cedc1bb4d5f83a" },
+      body: formData
+    });
+    const imgurData = await imgurRes.json();
+    const screenshotLink = imgurData.data.link;
 
-    fetch(scriptURL, {method:"POST", body:data})
-      .then(r=>r.text())
-      .then(()=>{
-        document.getElementById("message").innerText="✅ Uploaded successfully!";
-        form.reset();
-      })
-      .catch(()=>{
-        document.getElementById("message").innerText="❌ Upload failed. Try again.";
-      });
-  };
-  reader.readAsDataURL(file);
-});
-</script>
+    const body = { type: "review", name, mobile, screenshot: screenshotLink };
+    const res = await fetch(scriptURL, {
+      method: "POST",
+      body: JSON.stringify(body)
+    });
+    const data = await res.json();
+
+    if (data.success) {
+      status.innerHTML = `✅ Submitted successfully! <br> Total Points: <b>${data.totalPoints}</b>`;
+    } else {
+      status.innerText = "❌ Submission failed. Please try again.";
+    }
+  });
+  </script>
 </body>
 </html>
