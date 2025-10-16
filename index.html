@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1.0" />
+<title>Review & Earn Points</title>
+<style>
+body{font-family:'Poppins',sans-serif;background:linear-gradient(135deg,#a8c0ff,#3f2b96);
+margin:0;padding:20px;display:flex;justify-content:center;align-items:center;min-height:100vh;}
+.container{width:100%;max-width:380px;background:#fff;border-radius:20px;padding:25px;
+box-shadow:0 6px 20px rgba(0,0,0,0.1);text-align:center;}
+input,button{width:100%;padding:12px;margin-bottom:12px;border-radius:10px;
+border:1px solid #ccc;font-size:15px;}
+button{background:#3f2b96;color:#fff;font-weight:bold;border:none;cursor:pointer;}
+button:hover{background:#2c1e6a;}
+#message{color:green;font-weight:bold;font-size:14px;margin-top:8px;}
+</style>
+</head>
+<body>
+<div class="container">
+<h2>⭐ Review & Earn</h2>
+<p>Upload your Google Review screenshot to earn reward points.</p>
+<form id="reviewForm">
+  <input type="text" name="name" placeholder="Your Name" required>
+  <input type="text" name="mobile" placeholder="Mobile Number" required>
+  <input type="file" name="file" accept="image/*" required>
+  <button type="submit">Upload & Submit</button>
+</form>
+<p id="message"></p>
+</div>
+
+<script>
+const scriptURL = "YOUR_APPS_SCRIPT_WEB_APP_URL"; // paste Apps Script URL
+
+document.getElementById("reviewForm").addEventListener("submit", async (e)=>{
+  e.preventDefault();
+  const form = e.target;
+  const file = form.file.files[0];
+  if(!file){alert("Please select a file");return;}
+  const reader = new FileReader();
+  reader.onload = async ()=>{
+    const base64 = reader.result.split(",")[1];
+    const data = new URLSearchParams();
+    data.append("name", form.name.value);
+    data.append("mobile", form.mobile.value);
+    data.append("file", base64);
+    data.append("mimeType", file.type);
+    fetch(scriptURL, {method:"POST", body:data})
+      .then(r=>r.text())
+      .then(()=>{document.getElementById("message").innerText="✅ Uploaded successfully!";form.reset();})
+      .catch(err=>alert("Error: "+err));
+  };
+  reader.readAsDataURL(file);
+});
+</script>
+</body>
+</html>
