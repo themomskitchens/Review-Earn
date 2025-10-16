@@ -2,79 +2,39 @@
 <html lang="en">
 <head>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Your Rewards | The Mom’s Kitchen</title>
+  <title>Check Points | The Mom’s Kitchen</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+
+  <nav class="navbar">
+    <div class="nav-brand">🍳 The Mom’s Kitchen</div>
+    <div class="nav-links">
+      <a href="index.html" class="nav-link">Submit Review</a>
+      <a href="check-points.html" class="nav-link active">Check Points</a>
+      <a href="rewards.html" class="nav-link">Rewards</a>
+    </div>
+  </nav>
+
   <div class="container">
-    <img src="https://i.imgur.com/9A9O1MN.png" class="logo" alt="Logo">
-    <h2>🎁 Check Your Rewards</h2>
+    <img src="https://i.imgur.com/9A9O1MN.png" class="logo">
+    <h2>💰 Check Your Points</h2>
     <input type="text" id="mobile" placeholder="Enter Mobile Number">
-    <button onclick="loadRewards()">Check Points</button>
+    <button onclick="getPoints()">Check</button>
     <p id="userPoints"></p>
-    <div id="rewardList"></div>
   </div>
 
   <script>
-  const scriptURL = "YOUR_APPS_SCRIPT_WEB_APP_URL";
-
-  async function loadRewards() {
+  const scriptURL = "YOUR_SCRIPT_URL";
+  async function getPoints() {
     const mobile = document.getElementById("mobile").value.trim();
-    const pointsEl = document.getElementById("userPoints");
-    if (!mobile) return alert("Enter mobile number!");
-    pointsEl.innerText = "⏳ Calculating points...";
-
-    try {
-      const userRes = await fetch(`${scriptURL}?action=getUser&mobile=${mobile}`);
-      const userData = await userRes.json();
-      if (userData.error) {
-        pointsEl.innerText = "❌ User not found.";
-        return;
-      }
-
-      const points = userData.totalPoints || 0;
-      pointsEl.innerHTML = `Your Total Points: <b>${points}</b>`;
-      const rewardRes = await fetch(`${scriptURL}?action=rewards`);
-      const rewards = await rewardRes.json();
-
-      const list = document.getElementById("rewardList");
-      list.innerHTML = "";
-
-      rewards.forEach(r => {
-        const canRedeem = points >= r.points;
-        list.innerHTML += `
-          <div class="reward-card">
-            <img src="${r.image}" alt="${r.reward}">
-            <div>
-              <h3>${r.reward}</h3>
-              <p>${r.description}</p>
-              <p><b>${r.points} Points</b></p>
-              <button ${canRedeem ? `onclick="redeemReward('${mobile}','${r.reward}',${r.points})"` : "disabled"}>
-                ${canRedeem ? "Redeem Now" : "Not enough points"}
-              </button>
-            </div>
-          </div>`;
-      });
-    } catch (err) {
-      pointsEl.innerText = "❌ Error fetching data.";
-    }
-  }
-
-  async function redeemReward(mobile, reward, pointsUsed) {
-    if (!confirm(`Redeem ${reward} for ${pointsUsed} points?`)) return;
-
-    const res = await fetch(scriptURL, {
-      method: "POST",
-      body: JSON.stringify({ type: "redeem", mobile, reward, pointsUsed })
-    });
+    const res = await fetch(`${scriptURL}?action=getUser&mobile=${mobile}`);
     const data = await res.json();
-    if (data.success) {
-      alert(`✅ Redeemed successfully! Remaining points: ${data.remainingPoints}`);
-      loadRewards();
-    } else {
-      alert(`❌ ${data.error || "Error redeeming reward."}`);
-    }
+    document.getElementById("userPoints").innerHTML = data.error
+      ? "❌ Not found"
+      : `⭐ Total Points: <b>${data.totalPoints}</b>`;
   }
   </script>
+
 </body>
 </html>
