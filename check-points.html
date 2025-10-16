@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>The Mom’s Kitchen | Check Points</title>
+<link href="https://cdn.jsdelivr.net/npm/remixicon@4.0.0/fonts/remixicon.css" rel="stylesheet">
+<style>
+body{
+  font-family:'Poppins',sans-serif;
+  background:linear-gradient(135deg,#43cea2,#185a9d);
+  margin:0;padding:20px;
+  display:flex;justify-content:center;align-items:center;
+  min-height:100vh;flex-direction:column;
+}
+.container{
+  width:100%;max-width:400px;background:#fff;
+  border-radius:20px;padding:25px;
+  box-shadow:0 6px 20px rgba(0,0,0,0.15);
+  text-align:center;margin-bottom:70px;
+}
+.logo{font-size:22px;font-weight:700;color:#185a9d;margin-bottom:8px;}
+.subtitle{font-size:13px;color:#777;margin-bottom:15px;}
+input,button{
+  width:100%;padding:12px;margin:8px 0;
+  border-radius:10px;border:1px solid #ccc;font-size:15px;
+}
+button{
+  background:#185a9d;color:#fff;font-weight:bold;
+  border:none;cursor:pointer;transition:0.3s;
+}
+button:hover{background:#0f3c6b;}
+#result{margin-top:15px;font-weight:bold;color:#222;font-size:15px;}
+.navbar{
+  position:fixed;bottom:0;left:0;right:0;background:#fff;
+  display:flex;justify-content:space-around;border-top:1px solid #ddd;
+  box-shadow:0 -3px 10px rgba(0,0,0,0.1);padding:8px 0;
+}
+.navbar a{text-decoration:none;color:#555;font-size:13px;text-align:center;}
+.navbar a.active{color:#185a9d;font-weight:bold;}
+.navbar i{display:block;font-size:20px;margin-bottom:4px;}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="logo">🍽 The Mom’s Kitchen</div>
+  <div class="subtitle">Check your earned reward points</div>
+
+  <h3>🎯 Check Points</h3>
+  <input type="text" id="mobile" placeholder="Enter mobile number" />
+  <button onclick="checkPoints()">Check</button>
+  <p id="result"></p>
+</div>
+
+<div class="navbar">
+  <a href="index.html"><i class="ri-home-4-line"></i>Upload</a>
+  <a href="check-points.html" class="active"><i class="ri-star-line"></i>Points</a>
+  <a href="rewards.html"><i class="ri-gift-line"></i>Rewards</a>
+</div>
+
+<script>
+const scriptURL = "YOUR_APPS_SCRIPT_WEB_APP_URL";
+
+async function checkPoints(){
+  const mobile=document.getElementById("mobile").value.trim();
+  if(!mobile)return alert("Enter your mobile number");
+
+  const result=document.getElementById("result");
+  result.innerText="⏳ Calculating...";
+
+  try{
+    const res=await fetch(`${scriptURL}?mobile=${mobile}`);
+    const data=await res.json();
+
+    if(data.error){
+      result.innerText="❌ No record found.";
+    }else{
+      result.innerHTML=`Hi <b>${data.name}</b> 👋<br>You have ⭐ <b>${data.totalPoints}</b> points!`;
+    }
+  }catch(e){
+    result.innerText="⚠️ Error fetching data. Try again.";
+  }
+}
+</script>
+</body>
+</html>
