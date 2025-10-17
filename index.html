@@ -1,73 +1,26 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Submit Review | The Mom’s Kitchen</title>
-  <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Upload Review - The Mom’s Kitchen</title>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
+<div class="container">
+  <img src="logo.png" class="logo">
+  <h2>Upload Review Proof</h2>
+  <input type="text" id="name" placeholder="Your Name">
+  <input type="text" id="mobile" placeholder="Mobile Number">
+  <input type="file" id="screenshot">
+  <button onclick="submitReview()">Submit</button>
+  <p id="msg"></p>
+</div>
 
-  <!-- 🌐 Bottom Navigation Bar -->
-<nav class="bottom-nav">
-  <a href="index.html" class="nav-item">
-    <span class="material-icons">home</span>
-    <span>Upload</span>
-  </a>
-  <a href="check-points.html" class="nav-item">
-    <span class="material-icons">star</span>
-    <span>Points</span>
-  </a>
-  <a href="rewards.html" class="nav-item active">
-    <span class="material-icons">card_giftcard</span>
-    <span>Rewards</span>
-  </a>
-  </nav>
-
-  <div class="container">
-    <img src="https://i.imgur.com/9A9O1MN.png" class="logo" alt="Logo">
-    <h2>⭐ Submit Your Review Proof</h2>
-    <p>Upload your Google review screenshot and earn points!</p>
-
-    <form id="reviewForm">
-      <input type="text" id="name" placeholder="Your Name" required>
-      <input type="text" id="mobile" placeholder="Mobile Number" required>
-      <input type="file" id="screenshot" accept="image/*" required>
-      <button type="submit">Upload & Submit</button>
-    </form>
-
-    <p id="status"></p>
-  </div>
-
-  <script>
-  const scriptURL = "https://script.google.com/macros/s/AKfycbxIKs7LpXGzM6aCxOaY9qS0fm5jKAXU9sUkrUNFC2y9sswusPZQ1ZjoHfSpmT3OsgHzAg/exec";
-
-  document.getElementById("reviewForm").addEventListener("submit", async (e) => {
-    e.preventDefault();
-    const name = nameEl.value.trim();
-    const mobile = mobileEl.value.trim();
-    const file = screenshotEl.files[0];
-    if (!file) return alert("Upload screenshot first!");
-
-    statusEl.textContent = "Uploading...";
-    const imgData = new FormData();
-    imgData.append("image", file);
-
-    const upload = await fetch("https://api.imgur.com/3/image", {
-      method: "POST",
-      headers: { Authorization: "Client-ID 1cedc1bb4d5f83a" },
-      body: imgData
-    });
-    const imgRes = await upload.json();
-    const link = imgRes.data.link;
-
-    const res = await fetch(scriptURL, {
-      method: "POST",
-      body: JSON.stringify({ type: "review", name, mobile, screenshot: link })
-    });
-    const data = await res.json();
-    statusEl.textContent = data.success ? "✅ Submitted!" : "❌ Failed";
-  });
-  </script>
-
+<div class="navbar">
+  <a href="index.html">🏠 Upload</a>
+  <a href="check-points.html">⭐ Points</a>
+  <a href="rewards.html">🎁 Rewards</a>
+</div>
+<script src="script.js"></script>
 </body>
 </html>
