@@ -1,26 +1,59 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Upload Review - The Mom’s Kitchen</title>
-<link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Upload Review Proof | The Mom’s Kitchen</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-<div class="container">
-  <img src="logo.png" class="logo">
-  <h2>Upload Review Proof</h2>
-  <input type="text" id="name" placeholder="Your Name">
-  <input type="text" id="mobile" placeholder="Mobile Number">
-  <input type="file" id="screenshot">
-  <button onclick="submitReview()">Submit</button>
-  <p id="msg"></p>
-</div>
+  <div class="container">
+    <div class="card">
+      <img src="logo.png" alt="Logo" class="logo" />
+      <h2>Upload Review Proof</h2>
 
-<div class="navbar">
-  <a href="index.html">🏠 Upload</a>
-  <a href="check-points.html">⭐ Points</a>
-  <a href="rewards.html">🎁 Rewards</a>
-</div>
-<script src="script.js"></script>
+      <form id="reviewForm">
+        <input type="text" name="name" placeholder="Enter your name" required />
+        <input type="tel" name="mobile" placeholder="Enter your mobile number" required />
+        <input type="file" name="screenshot" accept="image/*" required />
+        <button type="submit">Submit</button>
+      </form>
+
+      <p id="msg" class="message"></p>
+    </div>
+  </div>
+
+  <!-- Bottom Navbar -->
+  <div class="navbar">
+    <a href="index.html" class="active"><img src="icons/home.png" /> Upload</a>
+    <a href="check-points.html"><img src="icons/star.png" /> Points</a>
+    <a href="rewards.html"><img src="icons/gift.png" /> Rewards</a>
+    <a href="redeem.html"><img src="icons/redeem.png" /> Redeem</a>
+  </div>
+
+  <script>
+    const form = document.getElementById("reviewForm");
+    const msg = document.getElementById("msg");
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      msg.textContent = "Submitting...";
+      const formData = new FormData(form);
+
+      try {
+        const response = await fetch(
+          "YOUR_APPS_SCRIPT_WEB_APP_URL", 
+          { method: "POST", body: formData }
+        );
+
+        if (response.ok) {
+          msg.textContent = "✅ Submitted successfully!";
+          form.reset();
+        } else throw new Error("Network error");
+      } catch (err) {
+        msg.textContent = "❌ Failed to submit. Try again!";
+      }
+    });
+  </script>
 </body>
 </html>
