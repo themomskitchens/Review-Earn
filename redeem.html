@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Redeem Points | The Mom’s Kitchen</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container">
+    <div class="card">
+      <img src="logo.png" alt="Logo" class="logo" />
+      <h2>Redeem Points</h2>
+      <p>Enter your mobile number to redeem your reward.</p>
+
+      <input type="tel" id="redeemMobile" placeholder="Enter your mobile number" />
+      <select id="rewardSelect">
+        <option value="">Select reward</option>
+        <option value="50">Free Drink – 50 Points</option>
+        <option value="100">Free Snack – 100 Points</option>
+        <option value="200">Meal Combo – 200 Points</option>
+      </select>
+      <button id="redeemBtn">Redeem</button>
+      <p id="redeemMsg"></p>
+    </div>
+  </div>
+
+  <div class="navbar">
+    <a href="index.html"><img src="icons/home.png" /> Upload</a>
+    <a href="check-points.html"><img src="icons/star.png" /> Points</a>
+    <a href="rewards.html"><img src="icons/gift.png" /> Rewards</a>
+    <a href="redeem.html" class="active"><img src="icons/redeem.png" /> Redeem</a>
+  </div>
+
+  <script>
+    document.getElementById("redeemBtn").addEventListener("click", async () => {
+      const mobile = document.getElementById("redeemMobile").value;
+      const reward = document.getElementById("rewardSelect").value;
+      const msg = document.getElementById("redeemMsg");
+
+      if (!mobile || !reward)
+        return (msg.textContent = "Please fill all details.");
+
+      msg.textContent = "Processing redemption...";
+
+      try {
+        const res = await fetch(
+          "YOUR_APPS_SCRIPT_WEB_APP_URL",
+          {
+            method: "POST",
+            body: JSON.stringify({ action: "redeem", mobile, reward }),
+            headers: { "Content-Type": "application/json" },
+          }
+        );
+        const data = await res.json();
+        msg.textContent = data.message || "Redeemed successfully!";
+      } catch (err) {
+        msg.textContent = "❌ Unable to redeem.";
+      }
+    });
+  </script>
+</body>
+</html>
