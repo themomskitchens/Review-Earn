@@ -57,7 +57,7 @@ button:hover {
   position: fixed;
   bottom: 0;
   width: 100%;
-  background: white;
+  background: fecd50;
   display: flex;
   justify-content: space-around;
   border-top: 1px solid #ddd;
@@ -78,7 +78,7 @@ button:hover {
 }
 
 .navbar a.active {
-  color: #fecd50;
+  color: #blue;
 }
 
 .reward-box {
