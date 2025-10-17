@@ -1,24 +1,48 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Check Points</title>
-<link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Your Points | The Mom’s Kitchen</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-<div class="container">
-  <img src="logo.png" class="logo">
-  <h2>Check Your Points</h2>
-  <input type="text" id="mobileCheck" placeholder="Enter Mobile Number">
-  <button onclick="checkPoints()">Check</button>
-  <h3 id="result"></h3>
-</div>
+  <div class="container">
+    <div class="card">
+      <img src="logo.png" alt="Logo" class="logo" />
+      <h2>Check Your Points</h2>
 
-<div class="navbar">
-  <a href="index.html">🏠 Upload</a>
-  <a href="check-points.html">⭐ Points</a>
-  <a href="rewards.html">🎁 Rewards</a>
-</div>
-<script src="script.js"></script>
+      <input type="tel" id="mobile" placeholder="Enter your mobile number" />
+      <button id="checkBtn">Check Points</button>
+      <p id="pointsResult"></p>
+    </div>
+  </div>
+
+  <div class="navbar">
+    <a href="index.html"><img src="icons/home.png" /> Upload</a>
+    <a href="check-points.html" class="active"><img src="icons/star.png" /> Points</a>
+    <a href="rewards.html"><img src="icons/gift.png" /> Rewards</a>
+    <a href="redeem.html"><img src="icons/redeem.png" /> Redeem</a>
+  </div>
+
+  <script>
+    document.getElementById("checkBtn").addEventListener("click", async () => {
+      const mobile = document.getElementById("mobile").value;
+      const result = document.getElementById("pointsResult");
+
+      if (!mobile) return (result.textContent = "Please enter mobile number.");
+      result.textContent = "Calculating...";
+
+      try {
+        const res = await fetch(
+          `YOUR_APPS_SCRIPT_WEB_APP_URL?action=getPoints&mobile=${mobile}`
+        );
+        const data = await res.json();
+        result.textContent = `⭐ Total Points: ${data.totalPoints || 0}`;
+      } catch (err) {
+        result.textContent = "❌ Unable to fetch points.";
+      }
+    });
+  </script>
 </body>
 </html>
