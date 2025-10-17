@@ -1,40 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Check Points | The Mom’s Kitchen</title>
-  <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Check Points</title>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
+<div class="container">
+  <img src="logo.png" class="logo">
+  <h2>Check Your Points</h2>
+  <input type="text" id="mobileCheck" placeholder="Enter Mobile Number">
+  <button onclick="checkPoints()">Check</button>
+  <h3 id="result"></h3>
+</div>
 
-  <nav class="navbar">
-    <div class="nav-brand">🍳 The Mom’s Kitchen</div>
-    <div class="nav-links">
-      <a href="index.html" class="nav-link">Submit Review</a>
-      <a href="check-points.html" class="nav-link active">Check Points</a>
-      <a href="rewards.html" class="nav-link">Rewards</a>
-    </div>
-  </nav>
-
-  <div class="container">
-    <img src="https://i.imgur.com/9A9O1MN.png" class="logo">
-    <h2>💰 Check Your Points</h2>
-    <input type="text" id="mobile" placeholder="Enter Mobile Number">
-    <button onclick="getPoints()">Check</button>
-    <p id="userPoints"></p>
-  </div>
-
-  <script>
-  const scriptURL = "YOUR_SCRIPT_URL";
-  async function getPoints() {
-    const mobile = document.getElementById("mobile").value.trim();
-    const res = await fetch(`${scriptURL}?action=getUser&mobile=${mobile}`);
-    const data = await res.json();
-    document.getElementById("userPoints").innerHTML = data.error
-      ? "❌ Not found"
-      : `⭐ Total Points: <b>${data.totalPoints}</b>`;
-  }
-  </script>
-
+<div class="navbar">
+  <a href="index.html">🏠 Upload</a>
+  <a href="check-points.html">⭐ Points</a>
+  <a href="rewards.html">🎁 Rewards</a>
+</div>
+<script src="script.js"></script>
 </body>
 </html>
